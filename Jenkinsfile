@@ -10,7 +10,7 @@ pipeline {
      containerPort = '8080'
 
      appUiName = 'flowable-ui'
-     uiHostPort = '6000'
+     uiHostPort = '6010'
      uiContainerPort = '80'
 
      harborUser = 'admin'
@@ -54,13 +54,13 @@ pipeline {
     stage('通过Docker制作自定义镜像') {
       steps {
         echo "制作后端镜像"
-        sh '''cd ruoyi-admin
-        docker build -t ${appName}:v1 -f Dockerfile ./
+        sh '''
+        docker build -t ${appName}:${tag} -f Dockerfile ./
         '''
         echo "制作前端镜像"
         sh '''
          cd ruoyi-ui
-         docker build -t ${appUiName}:${tag} -f dockerfile .
+         docker build -t ${appUiName}:${tag} -f Dockerfile .
          docker image prune -f
          '''
       }
@@ -85,8 +85,10 @@ pipeline {
         script {
           echo "发布命令：/usr/local/test/deploy.sh $harborAddress $harborRepo ${appName} ${tag} ${hostPort} ${containerPort}"
           echo "发布命令：/usr/local/test/deploy.sh $harborAddress $harborRepo ${appUiName} ${tag} ${uiHostPort} ${uiContainerPort}"
-          sshPublisher(publishers: [sshPublisherDesc(configName: 'test', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''/usr/local/test/deploy.sh $harborAddress $harborRepo ${appName} ${tag} ${hostPort} ${containerPort}
-          /usr/local/test/deploy.sh $harborAddress $harborRepo ${appUiName} ${tag} ${uiHostPort} ${uiContainerPort}''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+          sshPublisher(publishers: [sshPublisherDesc(configName: 'test', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''
+          /usr/local/test/deploy.sh $harborAddress $harborRepo ${appName} ${tag} ${hostPort} ${containerPort}
+          /usr/local/test/deploy.sh $harborAddress $harborRepo ${appUiName} ${tag} ${uiHostPort} ${uiContainerPort}
+          ''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
         }
 
       }
