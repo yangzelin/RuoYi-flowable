@@ -19,11 +19,8 @@ pipeline {
      gitToken = 'Jenkins_Publish'
      sonarqubeToken = 'squ_a2c90fa4c1c3d6bea64386433fb26395eb8e719f'
      dingDingWebHook = 'https://oapi.dingtalk.com/robot/send?access_token=d75d685d382897eee4629e33a5033ef0e4a439a95cddd268bd257d80d820f2e2'
-     hostPort = 'default' // 宿主机器端口
-     containerPort ='default' // 容器内部占用端口
-     dockerservice = '111'
-     dockerpath = '222'
-     dockerport = '333'
+//      hostPort = 'default' // 宿主机器端口
+//      containerPort ='default' // 容器内部占用端口
   }
 
 
@@ -34,7 +31,7 @@ pipeline {
 			$class: 'GitSCM',
 			branches: [[name: '${tag}']],
 			extensions: [],
-			userRemoteConfigs: [[credentialsId: "${gitToken}", url: 'https://github.ibm.com/unilever-repos/unilever-order.git']]
+			userRemoteConfigs: [[credentialsId: "${gitToken}", url: 'https://github.com/yangzelin/RuoYi-flowable.git']]
 		])
       }
     }
